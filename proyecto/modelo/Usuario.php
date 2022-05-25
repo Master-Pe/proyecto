@@ -41,7 +41,7 @@ class Usuario{
     }
 
     public function getPassUsuario(){
-        return $this->$pass;
+        return $this->pass;
     }
 
     public function getNickUsuario(){

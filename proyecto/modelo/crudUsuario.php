@@ -11,7 +11,7 @@ class crudUsuario{
         $mensaje = '';
         $baseDatos = Conexion::conectar();
 
-        $sql = $baseDatos->prepare('INSERT INTO usuarios(id_usuario,login_usuario,pass_usuario,nick_usuario,email_usuario) VALUES(:e_id_usuario,:e_login_usuario,:e_pass_usuario,:e_nick_usuario,:e_email_usuario)');
+        $sql = $baseDatos->prepare('INSERT INTO usuario(id_usuario,login_usuario,pass_usuario,nick_usuario,email_usuario) VALUES(:e_id_usuario,:e_login_usuario,:e_pass_usuario,:e_nick_usuario,:e_email_usuario)');
 
         $sql->bindValue('e_id_usuario',$usuario->getIdUsuario());
         $sql->bindValue('e_login_usuario',$usuario->getLoginUsuario());
@@ -30,6 +30,35 @@ class crudUsuario{
 
         Conexion::desconectar($baseDatos);
         return $mensaje;
+    }
+
+    public function leerUsuario(){
+        $baseDatos = Conexion::conectar();
+        $sql = $baseDatos->query('SELECT * FROM usuario ORDER BY login_usuario ASC');
+        $sql->execute();
+        Conexion::desconectar($baseDatos);
+        return ($sql->fetchAll());
+    }
+
+    public function modificarUsuario($usuario){
+        $baseDatos = Conexion::conectar();
+        $sql = $baseDatos->prepare('UPDATE usuario SET login_usuario =:e_login, pass_usuario = e_contraseña, nick_usuario = e_nick, email_usuario = e_email WHERE id_usuario = :e_id ');
+
+
+        $sql->bindValue('e_login',$usuario->getLoginUsuario());
+        $sql->bindValue('e_contraseña',$usuario->getPassUsuario());
+        $sql->bindValue('e_nick',$usuario->getNickUsuario());
+        $sql->bindValue('e_email',$usuario->getEmailUsuario());
+    
+        try{
+            $sql->execute();
+            echo "actualozacion exitosa";
+        }
+        catch(Exception $excepcion){
+            echo $excepcion->getMessage();
+            echo "Problemas en la conexion";
+        }
+        Conexion::desconectar($baseDatos);
     }
 }
 ?>
